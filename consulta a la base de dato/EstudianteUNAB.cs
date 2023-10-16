@@ -14,9 +14,9 @@ namespace consulta_a_la_base_de_dato
 
             public string Apellido { get; set; }
 
-            public int Edad { get; set;}
+            public int? Edad { get; set;}
 
-            public string Sexo { get; set; }
+            public string? Sexo { get; set; }
 
     }
 }
