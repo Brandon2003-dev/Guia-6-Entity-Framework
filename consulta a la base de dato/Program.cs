@@ -8,41 +8,49 @@ class Program
 {
     static void Main()
     {
+
         while (true)
         {
             using (var context = new Context())
             {
-                Console.WriteLine("Lista de Estudiantes:");
-                foreach (var estudiante in context.Estudiante.ToList())
+                Console.WriteLine("\nLista de Estudiantes:");
+
+                using (var contextdb = new Context())
                 {
-                    Console.WriteLine($"ID: {estudiante.Id}, Nombre: {estudiante.Nombre}, Edad: {estudiante.Edad}, Sexo: {estudiante.Sexo}");
+                    contextdb.Database.EnsureCreated();
+
+                    var estudiante = new EstudianteUNAB() { Nombre = "Pepito", Apellido = "Pérez" };
+                    contextdb.Add(estudiante);
+                    contextdb.SaveChanges();
+
+                    foreach (var s in context.Estudiante.ToList())
+                    {
+                        Console.WriteLine($"ID: {s.Id}, Nombre: {s.Nombre} {s.Apellido}, Edad: {s.Edad}, Sexo: {s.Sexo}");
+                    }
                 }
-            }
 
-            Console.WriteLine("\nIngrese los datos de los nuevos estudiantes:");
+                Console.WriteLine("\nIngrese los datos de los nuevos estudiantes:");
 
-            Console.Write("Nombre: ");
-            var nombre = Console.ReadLine();
+                Console.Write("Nombre: ");
+                var nombre = Console.ReadLine();
 
-            Console.Write("Apellido: ");
-            var apellido = Console.ReadLine();
+                Console.Write("Apellido: ");
+                var apellido = Console.ReadLine();
 
-            Console.Write("Sexo: ");
-            var sexo = Console.ReadLine();
+                Console.Write("Sexo: ");
+                var sexo = Console.ReadLine();
 
-            Console.Write("Edad: ");
-            if (int.TryParse(Console.ReadLine(), out int edad))
-            {
-                var nuevoEstudiante = new EstudianteUNAB
+                Console.Write("Edad: ");
+                if (int.TryParse(Console.ReadLine(), out int edad))
                 {
-                    Nombre = nombre,
-                    Apellido = apellido,
-                    Sexo = sexo,
-                    Edad = edad
-                };
+                    var nuevoEstudiante = new EstudianteUNAB
+                    {
+                        Nombre = nombre,
+                        Apellido = apellido,
+                        Sexo = sexo,
+                        Edad = edad
+                    };
 
-                using (var context = new Context())
-                {
                     try
                     {
                         context.Estudiante.Add(nuevoEstudiante);
@@ -54,18 +62,18 @@ class Program
                         Console.WriteLine("Error al agregar estudiante. Asegúrate de que los datos sean válidos.");
                     }
                 }
-            }
-            else
-            {
-                Console.WriteLine("Edad no válida. Intente nuevamente.");
-            }
+                else
+                {
+                    Console.WriteLine("Edad no válida. Intente nuevamente.");
+                }
 
-            Console.Write("¿Si de sea agregar mas estudiante presione (S) y si ya no de sea ingresar presione (N): ");
-            var respuesta = Console.ReadLine();
-            if (respuesta?.Trim().ToLower() != "s")
-            {
-                break;
+                Console.Write("¿Si desea agregar más estudiantes, presione (S) y si ya no desea ingresar, presione (N): ");
+                var respuesta = Console.ReadLine();
+                if (respuesta?.Trim().ToLower() != "s")
+                {
+                    break;
+                }
             }
-        }
-    }
+        }
+    }
 }
